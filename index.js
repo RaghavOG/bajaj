@@ -8,7 +8,7 @@ app.use(express.json({ limit: '10kb' }));
 
 app.use('/', bfhlRoutes);
 
-app.use('/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.status(200).json({
     is_success: true,
     official_email: config.officialEmail,
@@ -22,7 +22,13 @@ app.use((req, res) => {
   });
 });
 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = config.port;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
-app.listen(config.port, () => {
-  console.log(`Server running on port ${config.port}`);
-});
+// Export for Vercel
+export default app;

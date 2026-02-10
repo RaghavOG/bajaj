@@ -1,7 +1,11 @@
-const config = {
-    port: process.env.PORT || 3000,
-    officialEmail: process.env.OFFICIAL_EMAIL || 'raghav3912.beai23@chitkara.edu.in',
-    openaiApiKey: process.env.OPENAI_API_KEY || ''
-  };
+import dotenv from 'dotenv';
 
-  export default config;
+dotenv.config();
+
+const config = {
+  port: process.env.PORT || 3000,
+  officialEmail: process.env.OFFICIAL_EMAIL || 'raghav3912.beai23@chitkara.edu.in',
+  openaiApiKey: process.env.OPENAI_API_KEY || ''
+};
+
+export default config;
