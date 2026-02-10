@@ -10,9 +10,7 @@ router.get('/', (req, res) => {
   res.status(200).json({
     message: 'Welcome to the BFHL API',
     description: 'This is a REST API for the BFHL assignment',
-    author: 'Raghav Singla',
-    github: 'https://github.com/RaghavOG',
-    linkedin: 'https://www.linkedin.com/in/singlaraghav/',
+  
     official_email: config.officialEmail,
   });
 });
