@@ -14,6 +14,7 @@ npm install
 PORT=3000
 OFFICIAL_EMAIL=your_email@chitkara.edu.in
 OPENAI_API_KEY=your_openai_key
+NODE_ENV=development
 ```
 
 3. Run the server:
