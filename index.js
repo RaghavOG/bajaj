@@ -4,7 +4,33 @@ import bfhlRoutes from './routes/index.js';
 
 const app = express();
 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+
 app.use(express.json({ limit: '10kb' }));
+
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({
+      is_success: false,
+      official_email: config.officialEmail,
+      error: 'Invalid JSON format',
+    });
+  }
+  next();
+});
 
 app.use('/', bfhlRoutes);
 
@@ -22,7 +48,7 @@ app.use((req, res) => {
   });
 });
 
-// For local development
+
 if (process.env.NODE_ENV !== 'production') {
   const PORT = config.port;
   app.listen(PORT, () => {
@@ -30,5 +56,5 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Export for Vercel
+
 export default app;

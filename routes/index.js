@@ -4,6 +4,9 @@ import config from '../config/index.js';
 import mathUtils from '../utils/mathsUtils.js';
 import getAIAnswer from '../utils/aiAnswer.js';
 
+
+
+
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -19,7 +22,14 @@ router.post('/bfhl', async (req, res) => {
   try {
     const body = req.body;
 
-    // Check if exactly one key is present
+    if (!body || Object.keys(body).length === 0) {
+      return res.status(400).json({
+        is_success: false,
+        official_email: config.officialEmail,
+        error: 'Request body is required',
+      });
+    }
+
     const keys = Object.keys(body);
     if (keys.length !== 1) {
       return res.status(400).json({
@@ -32,13 +42,28 @@ router.post('/bfhl', async (req, res) => {
     const key = keys[0];
     const value = body[key];
 
-    // Handle fibonacci
     if (key === 'fibonacci') {
-      if (typeof value !== 'number' || value < 0 || !Number.isInteger(value)) {
+      if (typeof value !== 'number' || !Number.isInteger(value)) {
         return res.status(400).json({
           is_success: false,
           official_email: config.officialEmail,
-          error: 'Fibonacci input must be a non-negative integer',
+          error: 'Fibonacci input must be an integer',
+        });
+      }
+
+      if (value < 0) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'Fibonacci input must be non-negative',
+        });
+      }
+
+      if (value > 1000) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'Fibonacci input must be <= 1000',
         });
       }
 
@@ -50,7 +75,6 @@ router.post('/bfhl', async (req, res) => {
       });
     }
 
-    // Handle prime
     if (key === 'prime') {
       if (!Array.isArray(value)) {
         return res.status(400).json({
@@ -58,6 +82,32 @@ router.post('/bfhl', async (req, res) => {
           official_email: config.officialEmail,
           error: 'Prime input must be an array',
         });
+      }
+
+      if (value.length === 0) {
+        return res.status(200).json({
+          is_success: true,
+          official_email: config.officialEmail,
+          data: [],
+        });
+      }
+
+      if (value.length > 10000) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'Array size must be <= 10000',
+        });
+      }
+
+      for (let i = 0; i < value.length; i++) {
+        if (typeof value[i] !== 'number' || !Number.isInteger(value[i])) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: config.officialEmail,
+            error: 'All array elements must be integers',
+          });
+        }
       }
 
       const primes = value.filter((num) => mathUtils.isPrime(num));
@@ -68,14 +118,46 @@ router.post('/bfhl', async (req, res) => {
       });
     }
 
-    // Handle lcm
     if (key === 'lcm') {
-      if (!Array.isArray(value) || value.length === 0) {
+      if (!Array.isArray(value)) {
         return res.status(400).json({
           is_success: false,
           official_email: config.officialEmail,
-          error: 'LCM input must be a non-empty array',
+          error: 'LCM input must be an array',
         });
+      }
+
+      if (value.length === 0) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'LCM array cannot be empty',
+        });
+      }
+
+      if (value.length > 10000) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'Array size must be <= 10000',
+        });
+      }
+
+      for (let i = 0; i < value.length; i++) {
+        if (typeof value[i] !== 'number' || !Number.isInteger(value[i])) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: config.officialEmail,
+            error: 'All array elements must be integers',
+          });
+        }
+        if (value[i] <= 0) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: config.officialEmail,
+            error: 'LCM requires positive integers only',
+          });
+        }
       }
 
       const result = mathUtils.lcmOfArray(value);
@@ -86,14 +168,46 @@ router.post('/bfhl', async (req, res) => {
       });
     }
 
-    // Handle hcf
     if (key === 'hcf') {
-      if (!Array.isArray(value) || value.length === 0) {
+      if (!Array.isArray(value)) {
         return res.status(400).json({
           is_success: false,
           official_email: config.officialEmail,
-          error: 'HCF input must be a non-empty array',
+          error: 'HCF input must be an array',
         });
+      }
+
+      if (value.length === 0) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'HCF array cannot be empty',
+        });
+      }
+
+      if (value.length > 10000) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'Array size must be <= 10000',
+        });
+      }
+
+      for (let i = 0; i < value.length; i++) {
+        if (typeof value[i] !== 'number' || !Number.isInteger(value[i])) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: config.officialEmail,
+            error: 'All array elements must be integers',
+          });
+        }
+        if (value[i] <= 0) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: config.officialEmail,
+            error: 'HCF requires positive integers only',
+          });
+        }
       }
 
       const result = mathUtils.hcfOfArray(value);
@@ -104,13 +218,28 @@ router.post('/bfhl', async (req, res) => {
       });
     }
 
-    // Handle AI
     if (key === 'AI') {
-      if (typeof value !== 'string' || value.trim() === '') {
+      if (typeof value !== 'string') {
         return res.status(400).json({
           is_success: false,
           official_email: config.officialEmail,
-          error: 'AI input must be a non-empty string',
+          error: 'AI input must be a string',
+        });
+      }
+
+      if (value.trim() === '') {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'AI input cannot be empty',
+        });
+      }
+
+      if (value.length > 1000) {
+        return res.status(400).json({
+          is_success: false,
+          official_email: config.officialEmail,
+          error: 'AI input must be <= 1000 characters',
         });
       }
 
